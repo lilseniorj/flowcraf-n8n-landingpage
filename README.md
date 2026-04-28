@@ -7,16 +7,16 @@ Landing page personal de **Jesús Vargas Guerra** para mostrar automatizaciones 
 ## Previews
 
 ### Hero
-![Hero — Automatizaciones que trabajan mientras duermes](docs/screenshot-hero.png)
+![Hero — Automatizaciones que trabajan mientras duermes](public/2.png)
 
 ### Grilla de workflows
-![Grilla de workflows con thumbnails de canvas](docs/screenshot-grid.png)
+![Grilla de workflows con thumbnails de canvas](public/1.png)
 
 ### Detalle de workflow
-![Vista de detalle con canvas interactivo](docs/screenshot-detail.png)
+![Vista de detalle con canvas interactivo](public/4.png)
 
 ### Contacto
-![Sección de contacto y footer](docs/screenshot-contact.png)
+![Sección de contacto y footer](public/3.png)
 
 ---
 
