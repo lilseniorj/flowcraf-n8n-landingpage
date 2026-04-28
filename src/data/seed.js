@@ -677,7 +677,7 @@ export const I18N = {
     title_a:   { es: "Automatizaciones",             en: "Automations" },
     title_b:   { es: "que trabajan",                 en: "that work" },
     title_c:   { es: "mientras duermes",             en: "while you sleep" },
-    sub:       { es: "Workflows de producción con n8n: agentes IA, sub-workflows modulares e integraciones reales. Cada flujo está documentado, probado y listo para adaptar.", en: "Production workflows with n8n: AI agents, modular sub-workflows and real integrations. Each flow is documented, tested and ready to adapt." },
+    sub:       { es: "Procesos que se ejecutan solos, 24/7. Construidos con n8n: agentes IA, integraciones reales y sin código frágil. Listos para adaptar a tu negocio.", en: "Processes that run on their own, 24/7. Built with n8n: AI agents, real integrations and no brittle code. Ready to adapt to your business." },
     cta_primary:   { es: "Ver workflows", en: "See workflows" },
     cta_secondary: { es: "Hablemos",      en: "Get in touch" },
   },

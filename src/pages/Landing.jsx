@@ -105,9 +105,9 @@ function Hero({ lang, onJump, workflows }) {
         </div>
       </div>
       <div className="hero-meta">
-        <span className="mono-tag">workflow.json</span>
+        <span className="mono-tag">{bgWorkflow.slug || bgWorkflow.id}.json</span>
         <span className="mono-tag">·</span>
-        <span className="mono-tag">{featured.nodes} nodes</span>
+        <span className="mono-tag">{bgWorkflow.nodes} nodes</span>
         <span className="mono-tag">·</span>
         <span className="mono-tag" style={{ color: "var(--accent)" }}>● running</span>
       </div>
@@ -415,12 +415,7 @@ function About({ lang }) {
         </div>
         <div className="about-side">
           <div className="about-avatar">
-            <svg width="64" height="64" viewBox="0 0 22 22" fill="none">
-              <circle cx="5" cy="11" r="3" stroke="var(--accent)" strokeWidth="1.5" />
-              <circle cx="17" cy="6" r="2" stroke="var(--accent)" strokeWidth="1.5" />
-              <circle cx="17" cy="16" r="2" stroke="var(--accent)" strokeWidth="1.5" />
-              <path d="M8 11 L15 6 M8 11 L15 16" stroke="var(--accent)" strokeWidth="1.5" />
-            </svg>
+            <div className="about-initials">JV</div>
             <div className="about-avatar-name">Jesús Vargas Guerra</div>
             <div className="about-avatar-role mono">n8n builder</div>
             <div className="about-social">

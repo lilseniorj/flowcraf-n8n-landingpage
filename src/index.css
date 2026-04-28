@@ -288,7 +288,8 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ABOUT AVATAR */
 .about-avatar { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; padding: 24px 20px; text-align: center; }
-.about-avatar-name { font-weight: 600; font-size: 15px; }
+.about-initials { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-deep), var(--accent-2)); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -.02em; box-shadow: 0 0 0 4px rgba(196,181,253,.15), 0 8px 24px -8px rgba(124,58,237,.5); }
+.about-avatar-name { font-weight: 600; font-size: 15px; margin-top: 4px; }
 .about-avatar-role { color: var(--fg-3); font-size: 11px; }
 .about-social { display: flex; gap: 10px; margin-top: 8px; }
 
@@ -345,6 +346,7 @@ button { font-family: inherit; cursor: pointer; }
   .nav { padding: 12px 16px; }
   .nav-actions .btn-primary { display: none; }
   .hero { padding: 60px 16px 80px; min-height: 70vh; }
+  .hero-bg { mask-image: radial-gradient(600px 400px at 50% 40%, rgba(0,0,0,.8), transparent 75%); -webkit-mask-image: radial-gradient(600px 400px at 50% 40%, rgba(0,0,0,.8), transparent 75%); opacity: .35; }
   .hero-title { font-size: clamp(28px, 8vw, 52px); }
   .hero-cta { flex-direction: column; align-items: center; gap: 12px; }
   .hero-cta .btn-primary, .hero-cta .btn-ghost { width: 100%; text-align: center; }
