@@ -338,7 +338,6 @@ export default function WorkflowForm() {
   const [aiLoading, setAiLoading] = useState(false);
   const [rawJsonData, setRawJsonData] = useState(null);
   const [formLang] = useLang();
-  const [previewLang, setPreviewLang] = useState("es");
 
   useEffect(() => {
     if (!isEdit) return;
@@ -444,10 +443,10 @@ export default function WorkflowForm() {
     <div style={{ maxWidth: 820 }}>
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 500, letterSpacing: "-.02em" }}>
-          {isEdit ? "Editar workflow" : "Nuevo workflow"}
+          {isEdit ? (formLang === "es" ? "Editar workflow" : "Edit workflow") : (formLang === "es" ? "Nuevo workflow" : "New workflow")}
         </h1>
         <p style={{ margin: "6px 0 0", color: "var(--fg-3)", fontSize: 13 }}>
-          {isEdit ? "Modifica los datos del workflow." : "Sube el JSON de n8n y los datos se llenan automáticamente."}
+          {isEdit ? (formLang === "es" ? "Modifica los datos del workflow." : "Edit workflow details.") : (formLang === "es" ? "Sube el JSON de n8n y los datos se llenan automáticamente." : "Upload the n8n JSON and the fields fill automatically.")}
         </p>
       </div>
 
@@ -457,7 +456,7 @@ export default function WorkflowForm() {
           {rawJsonData && (
             <button type="button" onClick={() => runAiAnalysis(rawJsonData)} disabled={aiLoading}
               style={{ background: "var(--accent)", color: "#1a0d2e", border: "none", borderRadius: 7, padding: "6px 14px", fontWeight: 600, fontSize: 12, cursor: aiLoading ? "not-allowed" : "pointer", whiteSpace: "nowrap", opacity: aiLoading ? .6 : 1 }}>
-              {aiLoading ? "Analizando…" : "✨ Reintentar IA"}
+              {aiLoading ? (formLang === "es" ? "Analizando…" : "Analyzing…") : (formLang === "es" ? "✨ Reintentar IA" : "✨ Retry AI")}
             </button>
           )}
         </div>
@@ -471,20 +470,20 @@ export default function WorkflowForm() {
             <div>
               <h3 style={{ margin: "0 0 6px", fontSize: 15, fontWeight: 500, display: "flex", alignItems: "center", gap: 8 }}>
                 {parsed ? <span style={{ color: "#84cc99" }}>✓</span> : "📄"}
-                {parsed ? "JSON cargado y procesado" : "Importar workflow desde JSON"}
+                {parsed ? (formLang === "es" ? "JSON cargado y procesado" : "JSON loaded and processed") : (formLang === "es" ? "Importar workflow desde JSON" : "Import workflow from JSON")}
               </h3>
               <p style={{ margin: 0, color: "var(--fg-3)", fontSize: 12.5 }}>
                 {aiLoading
-                  ? "✨ Gemini analizando el workflow…"
+                  ? (formLang === "es" ? "✨ Gemini analizando el workflow…" : "✨ Gemini analyzing the workflow…")
                   : parsed
-                    ? `${form.nodes} nodos · ${form.connections} conexiones · ${form.integrations.length} integraciones detectadas`
-                    : "Sube el archivo .json exportado desde n8n. El resto se completa automáticamente."}
+                    ? `${form.nodes} ${formLang === "es" ? "nodos" : "nodes"} · ${form.connections} ${formLang === "es" ? "conexiones" : "connections"} · ${form.integrations.length} ${formLang === "es" ? "integraciones detectadas" : "integrations detected"}`
+                    : (formLang === "es" ? "Sube el archivo .json exportado desde n8n. El resto se completa automáticamente." : "Upload the .json file exported from n8n. The rest fills in automatically.")}
               </p>
             </div>
             <label style={{ cursor: "pointer" }}>
               <input type="file" accept=".json,application/json" onChange={handleJsonFile} style={{ display: "none" }} />
               <span style={{ background: parsed ? "rgba(132,204,153,.12)" : "var(--accent)", color: parsed ? "#84cc99" : "#1a0d2e", border: parsed ? "1px solid rgba(132,204,153,.35)" : "none", borderRadius: 9, padding: "9px 18px", fontWeight: 600, fontSize: 13, display: "inline-block", transition: "all .15s" }}>
-                {parsed ? "Cambiar JSON" : "Seleccionar JSON"}
+                {parsed ? (formLang === "es" ? "Cambiar JSON" : "Change JSON") : (formLang === "es" ? "Seleccionar JSON" : "Select JSON")}
               </span>
             </label>
           </div>
@@ -492,19 +491,11 @@ export default function WorkflowForm() {
           {/* Canvas preview */}
           {hasCanvas && (
             <div style={{ marginTop: 20, borderTop: "1px solid var(--line)", paddingTop: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ marginBottom: 10 }}>
                 <span style={{ fontFamily: "var(--mono)", fontSize: 10.5, color: "var(--fg-3)", textTransform: "uppercase", letterSpacing: ".06em" }}>Preview canvas</span>
-                <div style={{ display: "flex", gap: 6 }}>
-                  {["es", "en"].map(l => (
-                    <button key={l} type="button" onClick={() => setPreviewLang(l)}
-                      style={{ padding: "3px 10px", background: previewLang === l ? "rgba(196,181,253,.2)" : "transparent", border: "1px solid var(--line)", borderRadius: 6, color: previewLang === l ? "var(--accent)" : "var(--fg-3)", fontSize: 11, cursor: "pointer" }}>
-                      {l.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
               </div>
               <div style={{ height: 220, background: "#07060d", borderRadius: 10, overflow: "hidden", border: "1px solid var(--line)" }}>
-                <WorkflowCanvas workflow={{ ...form, title: form.title, edges: form.edges || [] }} hoverable={false} interactive={false} lang={previewLang} />
+                <WorkflowCanvas workflow={{ ...form, title: form.title, edges: form.edges || [] }} hoverable={false} interactive={false} lang={formLang} />
               </div>
             </div>
           )}
