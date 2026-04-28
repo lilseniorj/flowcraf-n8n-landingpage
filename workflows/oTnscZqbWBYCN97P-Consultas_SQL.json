@@ -1,0 +1,136 @@
+{
+  "name": "Consultas_SQL",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3d5972ee-69b6-46f8-8f51-a4ad03c39eed",
+      "name": "When chat message received",
+      "webhookId": "4f2e37e9-1023-4b93-95ef-631aafc610e5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Eres el Asistente Experto de Candydatos. Tu misión es analizar la colección 'applications' de Firestore para encontrar el mejor talento.\n\n### REGLAS DE ANÁLISIS:\n1. Siempre consulta la herramienta de Firestore cuando pregunten por candidatos, perfiles o evaluaciones.\n2. Identificación de Talento: Si un candidato posee habilidades en 'React' o 'Tailwind', clasifícalo automáticamente como \"Candidato de Alto Potencial\".\n3. Evaluación: Revisa el campo 'fit_check' y destaca específicamente las 'strengths' (fortalezas) encontradas.\n\n### FORMATO DE RESPUESTA (Telegram):\n- Usa negritas para los nombres de los candidatos.\n- 🚀 Si es un candidato fuerte (React/Tailwind), inicia con este cohete.\n- 💡 Resume las fortalezas en puntos breves.\n- Si no encuentras coincidencias, sugiere buscar por otras tecnologías o habilidades.\n\nSé directo, profesional y enfocado en ayudar al reclutador a tomar decisiones rápidas."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "3138ec2f-31ae-48ce-a448-abd6513017e4",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        232,
+        224
+      ],
+      "id": "79559a29-e4f2-44a7-8719-ee163192484f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xHyhyjWa105AOLfo",
+          "name": "Api account_Billing"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Úsala para obtener información de los candidatos en la colección 'applications'. Puedes ver su estado (current_step) y su puntaje de educación (education_score).",
+        "authentication": "serviceAccount",
+        "operation": "getAll",
+        "projectId": "candydatos",
+        "collection": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Collection', ``, 'string') }}",
+        "limit": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Limit', ``, 'number') }}"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestoreTool",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        224
+      ],
+      "id": "86275e1b-7370-4e85-8b52-a56e5a53dde2",
+      "name": "Get many documents in Google Cloud Firestore",
+      "credentials": {
+        "googleApi": {
+          "id": "7ZVrar8OMnUtcbUc",
+          "name": "Firestore_DB_Candydatos account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Get many documents in Google Cloud Firestore": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "svigOfWrpf5Gp2xb",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "name": "Error-Workflow-generico",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27276e62-bb15-4114-8499-5f153c3fafe5",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AS6NRS8UB",
+          "mode": "list",
+          "cachedResultName": "workflow-fallido"
+        },
+        "text": "=Error error algo ha fallado: \nURL ejecution: {{ $json.execution.url }}\nMensaje de error: {{ $json.execution.error.message }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "76abab0c-f622-488a-bc17-79f8a55fdc00",
+      "name": "Enviar mensaje de error",
+      "webhookId": "dc74ec7f-adf9-4f56-a2a6-6820f61e0a5f",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "75Id2T0g0sR6dlGA",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensaje de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

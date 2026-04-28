@@ -1,0 +1,440 @@
+{
+  "name": "Asistente-interno-flujo-principal",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Asistente Interno | Enviar Petición</title>\n    <link href=\"https://googleapis.com\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --primary: #6366f1;\n            --primary-hover: #4f46e5;\n            --bg: #f8fafc;\n            --card-bg: #ffffff;\n            --text: #1e293b;\n        }\n\n        body {\n            font-family: 'Inter', sans-serif;\n            background-color: var(--bg);\n            background-image: radial-gradient(circle at top right, #e0e7ff, transparent),\n                              radial-gradient(circle at bottom left, #f1f5f9, transparent);\n            height: 100vh;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            margin: 0;\n        }\n\n        .container {\n            background: var(--card-bg);\n            padding: 2.5rem;\n            border-radius: 20px;\n            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);\n            width: 100%;\n            max-width: 400px;\n            border: 1px solid rgba(255, 255, 255, 0.3);\n        }\n\n        h2 {\n            margin-top: 0;\n            color: var(--text);\n            font-weight: 600;\n            text-align: center;\n            font-size: 1.5rem;\n            margin-bottom: 1.5rem;\n        }\n\n        .form-group {\n            margin-bottom: 1.2rem;\n        }\n\n        label {\n            display: block;\n            margin-bottom: 0.5rem;\n            font-size: 0.875rem;\n            font-weight: 600;\n            color: #64748b;\n        }\n\n        input, textarea {\n            width: 100%;\n            padding: 0.75rem;\n            border: 1.5px solid #e2e8f0;\n            border-radius: 10px;\n            box-sizing: border-box;\n            font-size: 1rem;\n            transition: all 0.3s ease;\n            outline: none;\n            background-color: #fcfcfc;\n        }\n\n        input:focus, textarea:focus {\n            border-color: var(--primary);\n            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);\n        }\n\n        textarea {\n            resize: none;\n            height: 100px;\n        }\n\n        button {\n            width: 100%;\n            padding: 0.8rem;\n            background-color: var(--primary);\n            color: white;\n            border: none;\n            border-radius: 10px;\n            font-size: 1rem;\n            font-weight: 600;\n            cursor: pointer;\n            transition: background 0.3s ease, transform 0.2s ease;\n            margin-top: 1rem;\n        }\n\n        button:hover {\n            background-color: var(--primary-hover);\n            transform: translateY(-1px);\n        }\n\n        button:active {\n            transform: translateY(0);\n        }\n\n        #status {\n            margin-top: 1rem;\n            text-align: center;\n            font-size: 0.875rem;\n            padding: 0.75rem;\n            border-radius: 8px;\n            display: none;\n        }\n\n        .success { background: #dcfce7; color: #166534; display: block !important; }\n        .error { background: #fee2e2; color: #991b1b; display: block !important; }\n    </style>\n</head>\n<body>\n\n<div class=\"container\">\n    <h2>🚀 Nueva Petición</h2>\n    <form id=\"peticionForm\">\n        <div class=\"form-group\">\n            <label for=\"usuario\">Nombre de Usuario</label>\n            <input type=\"text\" id=\"usuario\" name=\"usuario\" placeholder=\"Ej: Juan Pérez\" required>\n        </div>\n        <div class=\"form-group\">\n            <label for=\"mensaje\">Tu Mensaje</label>\n            <textarea id=\"mensaje\" name=\"mensaje\" placeholder=\"¿En qué podemos ayudarte?\" required></textarea>\n        </div>\n        <button type=\"submit\" id=\"btnEnviar\">Enviar a n8n</button>\n    </form>\n    <div id=\"status\"></div>\n</div>\n\n<script>\n    const form = document.getElementById('peticionForm');\n    const statusDiv = document.getElementById('status');\n    const btn = document.getElementById('btnEnviar');\n\n    form.addEventListener('submit', async (e) => {\n        e.preventDefault();\n        \n        const data = {\n            usuario: document.getElementById('usuario').value,\n            mensaje: document.getElementById('mensaje').value\n        };\n\n        btn.innerText = 'Enviando...';\n        btn.disabled = true;\n\n        try {\n            const response = await fetch('https://lilseniorj.app.n8n.cloud/webhook/asistente-interno', {\n                method: 'POST',\n                headers: {\n                    'Content-Type': 'application/json'\n                },\n                body: JSON.stringify(data)\n            });\n\n            if (response.ok) {\n                statusDiv.textContent = '¡Enviado con éxito! 🎉';\n                statusDiv.className = 'success';\n                form.reset();\n            } else {\n                throw new Error();\n            }\n        } catch (error) {\n            statusDiv.textContent = 'Error al enviar. Verifica tu n8n.';\n            statusDiv.className = 'error';\n        } finally {\n            btn.innerText = 'Enviar a n8n';\n            btn.disabled = false;\n        }\n    });\n</script>\n\n</body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        208,
+        816
+      ],
+      "id": "26058020-5f8b-47ac-827c-2458da97e40b",
+      "name": "Mostrar Formulario",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "asistente-interno",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        912
+      ],
+      "id": "2ce211b3-9923-41d1-a723-91a5609dc696",
+      "name": "Recibir solicitud",
+      "webhookId": "bd8d89df-e61d-4902-97ea-e6d5afe69c82"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48305f37-21c5-42fa-9a70-4a0b958e9222",
+              "name": "usuario",
+              "value": "={{ $json.body.usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "bd67b44f-a240-43e9-909f-099f6898e8d8",
+              "name": "mensaje",
+              "value": "={{ $json.body.mensaje }}",
+              "type": "string"
+            },
+            {
+              "id": "56831372-599c-47d0-9bf0-b2fcd521280b",
+              "name": "prioridad",
+              "value": "={{ $json.body.mensaje.toLowerCase().includes('urgente') ? 'alta' : 'baja' }}",
+              "type": "string"
+            },
+            {
+              "id": "d7e59c11-631d-4513-b716-7ae63a422eee",
+              "name": "fecha",
+              "value": "={{ $now.format('yyyy-MM-dd') }}",
+              "type": "string"
+            },
+            {
+              "id": "667f7567-f833-45a9-8595-77ecb3cd9db2",
+              "name": "flujo",
+              "value": "={{ $workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "80634d92-ea7f-4ef1-9f4c-91a78722c5fc",
+              "name": "ejecution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        1008
+      ],
+      "id": "a5acfa54-2b0a-4adf-9307-fc1106c5ba36",
+      "name": "Extraer y preparar datos"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e256a850-447d-4e95-9bca-2bd791cf809d",
+              "leftValue": "={{ $json.mensaje }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "75c2593c-0ff2-4d48-bc1a-fd755e04378c",
+              "leftValue": "={{ $json.mensaje.length }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        432,
+        1008
+      ],
+      "id": "e70e1341-42e8-4f6b-b1a3-1828d094c8b0",
+      "name": "¿Mensaje válido?"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "oyXUXhbGbeFOLUUp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/oyXUXhbGbeFOLUUp",
+          "cachedResultName": "sub_clasificar_mensaje"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mensaje": "={{ $json.mensaje }}"
+          },
+          "matchingColumns": [
+            "mensaje"
+          ],
+          "schema": [
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        656,
+        912
+      ],
+      "id": "6294d005-5a6e-47e0-99c0-a7eb7d50c053",
+      "name": "Subworkflow: Clasificar Mensaje"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "U910f3PDuW1Fl2O4",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/U910f3PDuW1Fl2O4",
+          "cachedResultName": "sub-enrutado"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "categoria": "={{ $json.categoria }}",
+            "prioridad": "={{ $('Extraer y preparar datos').item.json.prioridad }}",
+            "usuario": "={{ $('Extraer y preparar datos').item.json.usuario }}",
+            "mensaje": "={{ $('Extraer y preparar datos').item.json.mensaje }}",
+            "ejecution_id": "={{ $('Extraer y preparar datos').item.json.ejecution_id }}",
+            "fecha": "={{ $('Extraer y preparar datos').item.json.fecha }}",
+            "If_prioridad": "={{ $('¿Mensaje válido?').item.json.prioridad }}"
+          },
+          "matchingColumns": [
+            "categoria",
+            "prioridad",
+            "usuario",
+            "mensaje",
+            "ejecution_id",
+            "fecha",
+            "If_prioridad"
+          ],
+          "schema": [
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ejecution_id",
+              "displayName": "ejecution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "If_prioridad",
+              "displayName": "If_prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        912
+      ],
+      "name": "Subworkflow: Registrar Tarea",
+      "id": "4bb6119a-bdec-43c0-a5da-e7333f500020"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1104,
+        912
+      ],
+      "id": "29957564-3b1e-4eba-8b42-ddf56ccbaf37",
+      "name": "Responde: Mensaje recibido"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"estado\": \"error\",\n  \"detalle\": \"El mensaje está vacío o es demasiado corto\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        656,
+        1104
+      ],
+      "id": "1b68c70e-382d-4eea-b82a-49a78faae909",
+      "name": "Responde: Mensaje invalido"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AS6NRS8UB",
+          "mode": "list",
+          "cachedResultName": "workflow-fallido"
+        },
+        "text": "Error workflow",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        432,
+        816
+      ],
+      "id": "c4b82956-b069-4ab3-8658-876c1cbdcd67",
+      "name": "Send a message",
+      "webhookId": "af304679-abea-4ef8-aa08-fb8306636507",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "75Id2T0g0sR6dlGA",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Recibir solicitud": {
+      "main": [
+        [
+          {
+            "node": "Mostrar Formulario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extraer y preparar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer y preparar datos": {
+      "main": [
+        [
+          {
+            "node": "¿Mensaje válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Mensaje válido?": {
+      "main": [
+        [
+          {
+            "node": "Subworkflow: Clasificar Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responde: Mensaje invalido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subworkflow: Clasificar Mensaje": {
+      "main": [
+        [
+          {
+            "node": "Subworkflow: Registrar Tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subworkflow: Registrar Tarea": {
+      "main": [
+        [
+          {
+            "node": "Responde: Mensaje recibido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mostrar Formulario": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "svigOfWrpf5Gp2xb",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

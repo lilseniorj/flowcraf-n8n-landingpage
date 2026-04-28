@@ -1,0 +1,287 @@
+{
+  "name": "MyChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.content.parts[0].text }}",
+        "options": {
+          "systemMessage": "=Eres un asistente que resume audio de voz que se ha enviado a mí. Quiero que extraigas la esencia del audio que te envíe y la condenses en 3-4 frases directas y sin rodeos."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        832,
+        -112
+      ],
+      "id": "5e2bfbdd-d4a2-4f11-9414-a783d36bd9c6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        912,
+        112
+      ],
+      "id": "bd308553-2219-4a96-9315-ca97e3064d34",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "UlIXjehvfyOP7EiA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -112
+      ],
+      "id": "f0bb4c9a-3e2c-4093-9afd-e7cc858a13c9",
+      "name": "Recibir Mensaje Telegram",
+      "webhookId": "f670ad9e-992d-48ae-8de4-cb603cf58655",
+      "credentials": {
+        "telegramApi": {
+          "id": "4DzhttBX9dxKUnKK",
+          "name": "Liln8nbot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Dame un momento",
+        "additionalFields": {
+          "reply_to_message_id": "={{ $json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        -112
+      ],
+      "id": "485d4145-2a1e-49ff-bb02-7f0b038c98e4",
+      "name": "Confirmar Recepción",
+      "webhookId": "9deb181f-8dad-46f8-852f-96f28d13da29",
+      "credentials": {
+        "telegramApi": {
+          "id": "4DzhttBX9dxKUnKK",
+          "name": "Liln8nbot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "10977fce-c3ec-4b87-a19c-e110846058fc",
+              "leftValue": "={{ $json.result.reply_to_message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        -112
+      ],
+      "id": "ba7588da-90e1-4887-8213-a1ea30143cee",
+      "name": "Filtrar Nota de Voz"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Recibir Mensaje Telegram').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -112
+      ],
+      "id": "db3e716e-0e85-4154-a896-340809f9557d",
+      "name": "Descargar Audio",
+      "webhookId": "88b25d90-6ef1-4205-b731-110f9503b5c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "4DzhttBX9dxKUnKK",
+          "name": "Liln8nbot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        -112
+      ],
+      "id": "0d2d6779-d3d1-4072-8b69-4c3b3cf59e1c",
+      "name": "Convertir Voz a Texto",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xHyhyjWa105AOLfo",
+          "name": "Api account_Billing"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Recibir Mensaje Telegram').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        -112
+      ],
+      "id": "d818659f-02ed-491b-bc64-b75e417d7f62",
+      "name": "Enviar Respuesta Final",
+      "webhookId": "161e4a92-989e-4f56-939f-7cbef2faec45",
+      "credentials": {
+        "telegramApi": {
+          "id": "4DzhttBX9dxKUnKK",
+          "name": "Liln8nbot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recibir Mensaje Telegram": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Recepción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar Recepción": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Nota de Voz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Nota de Voz": {
+      "main": [
+        [
+          {
+            "node": "Descargar Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar Audio": {
+      "main": [
+        [
+          {
+            "node": "Convertir Voz a Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convertir Voz a Texto": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "svigOfWrpf5Gp2xb",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
