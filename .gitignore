@@ -1,6 +1,12 @@
 # n8n workflow exports — private
 workflows/
 
+# Legacy pre-Vite files (reemplazados por src/)
+canvas.jsx
+data.jsx
+sections.jsx
+tweaks-panel.jsx
+
 # Dependencies
 node_modules/
 
