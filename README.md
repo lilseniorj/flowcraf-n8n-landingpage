@@ -18,6 +18,9 @@ Landing page personal de **Jesús Vargas Guerra** para mostrar automatizaciones 
 ### Contacto
 ![Sección de contacto y footer](public/3.png)
 
+### Panel de administración
+![Panel admin — gestión de workflows](public/image.png)
+
 ---
 
 ## Stack
