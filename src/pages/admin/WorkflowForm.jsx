@@ -87,22 +87,35 @@ function parseN8nJson(json) {
       if (info?.integration) intSet.add(info.integration);
     }
 
-    // Normalize canvas positions from real n8n positions
+    // Normalize canvas positions — grid-based layout to guarantee clean spacing
     const nodesToLayout = mainNodes.length > 0 ? mainNodes : allNodes;
-    const xs = nodesToLayout.map(n => n.position[0]);
-    const ys = nodesToLayout.map(n => n.position[1]);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
-    const SCALE = 0.55;
-    const SPACING = 8;
+    const COL_W   = 192;  // NODE_W(132) + 60px gap between columns
+    const ROW_H   = 84;   // NODE_H(56)  + 28px gap between rows
+    const PAD     = 24;
+    const COL_SNAP = 180; // n8n pixels threshold to group nodes into same column
+    const ROW_SNAP = 120; // n8n pixels threshold to group nodes into same row
+
+    // Build sorted unique column/row breakpoints from original n8n positions
+    const rawXs = nodesToLayout.map(n => n.position[0]);
+    const rawYs = nodesToLayout.map(n => n.position[1]);
+    const uniqueX = [];
+    for (const x of [...rawXs].sort((a, b) => a - b)) {
+      if (!uniqueX.find(ux => Math.abs(ux - x) < COL_SNAP)) uniqueX.push(x);
+    }
+    const uniqueY = [];
+    for (const y of [...rawYs].sort((a, b) => a - b)) {
+      if (!uniqueY.find(uy => Math.abs(uy - y) < ROW_SNAP)) uniqueY.push(y);
+    }
 
     const canvasNodes = nodesToLayout.map((n, i) => {
-      const info = NODE_TYPE_MAP[n.type] || { type: "app", icon: "⚙️" };
+      const info  = NODE_TYPE_MAP[n.type] || { type: "app", icon: "⚙️" };
       const label = n.name.length > 16 ? n.name.slice(0, 16).trim() + "…" : n.name;
+      const colIdx = uniqueX.findIndex(ux => Math.abs(ux - n.position[0]) < COL_SNAP);
+      const rowIdx = uniqueY.findIndex(uy => Math.abs(uy - n.position[1]) < ROW_SNAP);
       return {
         id: `n${i + 1}`,
-        x: Math.round((n.position[0] - minX) * SCALE + SPACING),
-        y: Math.round((n.position[1] - minY) * SCALE + SPACING),
+        x: PAD + colIdx * COL_W,
+        y: PAD + rowIdx * ROW_H,
         type: info.type,
         icon: info.icon,
         label,
